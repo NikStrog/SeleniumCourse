@@ -18,21 +18,17 @@ import java.util.List;
 
 public class StartPage extends BaseActions {
 
-    public StartPage(){
-        PageFactory.initElements(driverManager.getDriver(), this);
-    }
-
     @FindBy(xpath = "//h1[contains(@class, 'subtitle')]")
-    private WebElement title;
+    private WebElement startPageTitle;
     /**
      * Проверка перехода на стартовую страницу
      */
     public void checkOpenPage(){
-        Assert.assertEquals("Заголовок не найден", "Панель быстрого запуска", title.getText());
+        Assert.assertEquals("Заголовок не найден", "Панель быстрого запуска", startPageTitle.getText());
 
     }
 
-    @FindBy(xpath = "//ul[@class = 'nav nav-multilevel main-menu']")
+    @FindBy(xpath = "//ul[@class = 'nav nav-multilevel main-menu']/li/a/span")
     private List<WebElement> baseMenuButtons;
 
     /**
@@ -46,11 +42,11 @@ public class StartPage extends BaseActions {
                 menuElement.click();
                 return;
             }
-            else Assert.fail("Кнопка меню " + menuSection + " не найдена");
         }
+        Assert.fail("Кнопка меню " + menuSection + " не найдена");
     }
 
-    @FindBy(xpath = "//*[@id='main-menu']/ul/li/ul/li/a//*[@id='main-menu']/ul/li/ul/li/a")
+    @FindBy(xpath = "//*[@id='main-menu']/ul/li/ul/li/a/span")
     private List<WebElement> subMenuButtons;
 
     /**
@@ -64,7 +60,7 @@ public class StartPage extends BaseActions {
                 subMenuElement.click();
                 return;
             }
-            else Assert.fail("Кнопка подменю " + subMenuSection + " не найдена");
         }
+        Assert.fail("Кнопка подменю " + subMenuSection + " не найдена");
     }
 }

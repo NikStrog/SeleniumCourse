@@ -12,11 +12,6 @@ import java.time.Duration;
 
 public class BusinessTripsPage extends BaseActions {
 
-    public BusinessTripsPage(){
-        PageFactory.initElements(driverManager.getDriver(), this);
-    }
-
-
     @FindBy(xpath = "//a[@href = '/business-trip/create/' and @title]")
     private WebElement createBusinessTrip;
 

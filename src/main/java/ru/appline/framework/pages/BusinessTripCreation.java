@@ -9,16 +9,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.SplittableRandom;
 
 public class BusinessTripCreation extends BaseActions{
-
-    public BusinessTripCreation(){
-        PageFactory.initElements(driverManager.getDriver(), this);
-    }
 
     @FindBy(xpath = "//select[contains(@data-name, 'field__business-unit')]")
     private WebElement departmentListButton;
@@ -39,8 +37,8 @@ public class BusinessTripCreation extends BaseActions{
                 element.click();
                 return;
             }
-            else Assert.fail("Отдел " + departmentName + " не найден");
         }
+        Assert.fail("Отдел " + departmentName + " не найден");
     }
 
     @FindBy(xpath = "//a[text()='Открыть список']")
@@ -67,7 +65,7 @@ public class BusinessTripCreation extends BaseActions{
         organizationInputField.sendKeys(organizationName);
     }
 
-    @FindBy(xpath = "//*[@id=select2-drop]/ul[2]/li/div")
+    @FindBy(xpath = "//div[@class = 'select2-result-label']")
     private WebElement organizationChoose;
     public void organizationClick(){
         organizationChoose.click();
@@ -77,41 +75,80 @@ public class BusinessTripCreation extends BaseActions{
     private List<WebElement> tasksList;
     public void taskChoose(String taskName){
         for (WebElement task:tasksList) {
-            if(task.getText().equals(taskName)){
+            if(task.findElement(By.xpath("./../label")).getText().contains(taskName)){
                 task.click();
-            }
-            else Assert.fail("Задача " + taskName + " не найдена");
-        }
-    }
-
-    @FindBy(xpath = "//input[contains(@id, 'City')]")
-    private List<WebElement> cityEnterFieldList;
-
-    public void setCity(String departureCity, String arrivalCity){
-        for (WebElement i:cityEnterFieldList) {
-            if(i.findElement(By.xpath("/../..//label[text() = 'Город выбытия']")).getText().equals("Город выбытия")){
-                fillInputField(i, departureCity);
                 return;
             }
-            else if (i.findElement(By.xpath("/../..//label[text() = 'Город прибытия']")).getText().equals("Город прибытия")){
-                fillInputField(i, arrivalCity);
+        }
+        Assert.fail("Задача " + taskName + " не найдена");
+    }
+
+    @FindBy(xpath = "//input[contains(@data-name, 'departure-city')]")
+    private WebElement departureCity;
+    public void departureCityEnter(String nameDepartureCity){
+        fillInputField(departureCity, nameDepartureCity);
+    }
+
+    @FindBy(xpath = "//input[contains(@data-name, 'arrival-city')]")
+    private WebElement arrivalCity;
+    public void arrivalCityEnter(String nameArrivalCity){
+        fillInputField(arrivalCity, nameArrivalCity);
+    }
+
+    @FindBy(xpath = "//input[@placeholder = 'Укажите дату' and contains(@id, 'departure')]")
+    private WebElement departureDateField;
+    public void departureDateFieldClick(){
+        departureDateField.click();
+    }
+
+    @FindBy(xpath = "//input[@placeholder = 'Укажите дату' and contains(@id, 'return')]")
+    private WebElement arrivalDateField;
+    public void arrivalDateFieldClick(){
+        arrivalDateField.click();
+    }
+
+    @FindBy(xpath = "//select[@class = 'ui-datepicker-month']")
+    private WebElement chooseMonth;
+    public void chooseMonthClick(){
+        chooseMonth.click();
+    }
+
+    @FindBy(xpath = "//select[@class = 'ui-datepicker-year']")
+    private WebElement chooseYear;
+    public void chooseYearClick(){
+        chooseYear.click();
+    }
+
+    @FindBy(xpath = "//td[@data-handler = 'selectDay']")
+    private List<WebElement> dayList;
+    public void dayPick(String day){
+        for (WebElement q:dayList) {
+            if(q.getText().contains(day)){
+                q.click();
             }
         }
     }
 
-    @FindBy(xpath = "//input[contains(@id, 'Date') and @placeholder = 'Укажите дату']")
-    private List<WebElement> dateEnterList;
-    public void setDate(String departureDate, String arrivalDate){
-        for (WebElement y:dateEnterList) {
-            if(y.findElement(By.xpath("/../..//label[text() = 'Планируемая дата выезда']")).getText().equals("Планируемая дата выезда")){
-                fillInputField(y, departureDate);
-                return;
-            }
-            else if (y.findElement(By.xpath("/../..//label[text() = 'Планируемая дата возвращения']")).getText().equals("Планируемая дата возвращения")){
-                fillInputField(y, arrivalDate);
+    @FindBy(xpath = "//select[@class = 'ui-datepicker-month']/option")
+    private List<WebElement> monthList;
+    public void monthPick(String month){
+        for (WebElement q:monthList) {
+            if(q.getText().contains(month)){
+                q.click();
             }
         }
     }
+
+    @FindBy(xpath = "//select[@class = 'ui-datepicker-year']/option")
+    private List<WebElement> yearList;
+    public void yearPick(String year){
+        for (WebElement q:yearList) {
+            if(q.getText().contains(year)){
+                q.click();
+            }
+        }
+    }
+
 
     @FindBy(xpath = "//button[contains(text(), 'Сохранить') and contains(@class, 'main')]")
     private WebElement savePageButton;
@@ -123,6 +160,14 @@ public class BusinessTripCreation extends BaseActions{
     private WebElement saveAndClosePageButton;
     public void saveAndClosePage(){
         saveAndClosePageButton.click();
+    }
+
+    @FindBy(xpath = "//span[contains(text(), 'Список командируемых')]")
+    private List<WebElement> errorMessageList;
+    public void checkErrorMessage(){
+        for (WebElement q:errorMessageList) {
+            Assert.assertNotEquals("Список командируемых сотрудников не может быть пустым", q.getText());
+        }
     }
 
 
